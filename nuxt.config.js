@@ -17,6 +17,10 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
   },
 
+  router: {
+    base: '/PruebaGeneradorNiveles/'
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [],
 
