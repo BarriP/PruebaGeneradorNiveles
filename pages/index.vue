@@ -68,8 +68,17 @@
     <b-card title="Opciones adicionales" class="mt-3">
       <b-row>
         <b-col>
-          <strong>No implmenentado, por defecto true</strong>
-          <b-form-group label="Permitir Starvation">
+          <strong>No implmenentadas, por defecto a TRUE todas</strong>
+          <b-form-group label="Permitir empezar categorias aunque no haya algunas terminadas">
+            <b-form-radio-group
+              id="btn-radios-1"
+              v-model="opciones.starvation"
+              :options="combos.starvation"
+              name="radios-btn-default"
+              buttons
+            ></b-form-radio-group>
+          </b-form-group>
+          <b-form-group label="No repetir mismo en el mismo nivel de dificultad">
             <b-form-radio-group
               id="btn-radios-1"
               v-model="opciones.starvation"
@@ -626,12 +635,19 @@ export default {
       return cat
     },
     getNextCategoria(categoriaIndex, level, id) {
+      // Obtenemos las categorias activas pero quitamos las que tengan chunks que hayan salido
+      const chunksActivos = this.engine.chunks[level].map(x => x.categoria)
+      consola.log(`Chunks activos en esta categoria [${chunksActivos.join(', ')}]`)
+      const categorias = this.engine.activeCategories.filter(x => !chunksActivos.includes(x.categoria))
+      consola.log('Ignorando chunks activos, lista final de categorias:')
+      consola.log(categorias)
+
       // Recorremos todo el array de activos para sacar el siguiente
       let index = categoriaIndex >= this.engine.levelCategories.length ? 0 : categoriaIndex
       consola.log(`Recorriendo el array de categorias activas desde el index [${categoriaIndex}]`)
-      for (let i = 0; i < this.engine.activeCategories.length; i++) {
+      for (let i = 0; i < categorias.length; i++) {
         consola.log(`Buscando en index [${index}] de la lista de categorias activas`)
-        const cat = this.engine.activeCategories[index]
+        const cat = categorias[index]
 
         // Si es correcta, terminamos
         if(cat && cat.usable) {
@@ -647,12 +663,12 @@ export default {
         // Si no, pasamos a la siguiente
         consola.log(`Categoria no usable [${cat}], pasando a la siguiente...`)
 
-        index = (index + 1) % this.engine.activeCategories.length
+        index = (index + 1) % categorias.length
       }
 
       // Si no hay mas en la lista, se añade una
       consola.log('No se han obtenido categorias usables en la lista, obteniendo nueva')
-      const cat = this.getRandomCategoria(this.engine.activeCategories.map(x => x.categoria), level)
+      const cat = this.getRandomCategoria(categorias.map(x => x.categoria), level)
 
       // Se genera la categoria y se añade al listado
       const catObj = this.crearCategoria(cat, id)
