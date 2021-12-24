@@ -6,7 +6,8 @@
     <!--
     -->
     <b-button variant="info" class="mb-3" @click="rellenarDatosBase">Rellenar Datos Iniciales</b-button>
-    <b-card title="Random Numero de veces a salir">
+    <b-button variant="info" class="mb-3" @click="combos.showOptions = !combos.showOptions">Ocultar/Mostrar opciones</b-button>
+    <b-card v-show="combos.showOptions" title="Random Numero de veces a salir">
       <b-row>
         <b-col cols="2">
           <b-input-group size="lg" prepend="1 Vez" append="%">
@@ -36,7 +37,7 @@
       </b-row>
       <b-alert class="mt-3" variant="danger" :show="(probabilidades.c1 + probabilidades.c2 + probabilidades.c3 + probabilidades.c4 + probabilidades.c5) != 100">La suma de ambos no es 100%</b-alert>
     </b-card>
-    <b-card title="Random Ruptura de Categoria" class="mt-3">
+    <b-card v-show="combos.showOptions" title="Random Ruptura de Categoria" class="mt-3">
       <b-row>
         <b-col cols="3">
           <b-input-group size="lg" prepend="Super Facil (XS)" append="%">
@@ -65,7 +66,7 @@
         </b-col>
       </b-row>
     </b-card>
-    <b-card title="Opciones adicionales" class="mt-3">
+    <b-card v-show="combos.showOptions" title="Opciones adicionales" class="mt-3">
       <b-row>
         <b-col>
           <strong>No implmenentadas, por defecto a TRUE todas</strong>
@@ -90,7 +91,7 @@
         </b-col>
       </b-row>
     </b-card>
-    <b-card title="Categorias" class="mt-3">
+    <b-card v-show="combos.showOptions" title="Categorias" class="mt-3">
       <b-card no-body>
         <b-tabs v-model="combos.activeCardIndex" card>
           <b-tab title="Random Categorias" active>
@@ -132,12 +133,53 @@
             </div>
           </b-tab>
           <b-tab title="Cargar Categorias desde texto">
-            <!-- PONER CARGA DESDE TEXTO -->
+            <b-row>
+              <b-col cols="2">
+                <b-input-group size="lg" prepend="Separador">
+                  <b-form-input v-model="textCategories.separador"></b-form-input>
+                </b-input-group>
+              </b-col>
+            </b-row>
+            <b-row class="mt-3">
+              <b-col cols="12">
+                <b-input-group size="lg" prepend="Categorias XS">
+                  <b-form-input v-model="textCategories.xsString"></b-form-input>
+                </b-input-group>
+              </b-col>
+            </b-row>
+            <b-row class="mt-3">
+              <b-col cols="12">
+                <b-input-group size="lg" prepend="Categorias S">
+                  <b-form-input v-model="textCategories.sString"></b-form-input>
+                </b-input-group>
+              </b-col>
+            </b-row>
+            <b-row class="mt-3">
+              <b-col cols="12">
+                <b-input-group size="lg" prepend="Categorias M">
+                  <b-form-input v-model="textCategories.mString"></b-form-input>
+                </b-input-group>
+              </b-col>
+            </b-row>
+            <b-row class="mt-3">
+              <b-col cols="12">
+                <b-input-group size="lg" prepend="Categorias L">
+                  <b-form-input v-model="textCategories.lString"></b-form-input>
+                </b-input-group>
+              </b-col>
+            </b-row>
+            <b-row class="mt-3">
+              <b-col cols="12">
+                <b-input-group size="lg" prepend="Categorias XL">
+                  <b-form-input v-model="textCategories.xlString"></b-form-input>
+                </b-input-group>
+              </b-col>
+            </b-row>
           </b-tab>
         </b-tabs>
       </b-card>
     </b-card>
-    <b-card title="Composicion del nivel" class="mt-3">
+    <b-card v-show="combos.showOptions" title="Composicion del nivel" class="mt-3">
       <b-row>
         <b-col cols="3">
           <b-input-group size="lg" prepend="Super Facil (XS)" append="Chunks">
@@ -188,34 +230,34 @@
     <b-card v-if="combos.showResult" title="Resultado de la RUN" class="mt-3">
       <h3>Categorias totales ({{ engine.categories.length }})</h3>
       <div>
-        <colored-tag v-for="c in engine.categories" :key="c" class="ml-3" :text="c"></colored-tag>
+        <colored-tag v-for="c in engine.categories" :key="'c-' + c" class="ml-3" :text="c"></colored-tag>
       </div>
       <h3>Categorias XS ({{ engine.levelCategories.xs.length }})</h3>
       <div>
-        <colored-tag v-for="c in engine.levelCategories.xs" :key="c" class="ml-3" :text="c"></colored-tag>
+        <colored-tag v-for="c in engine.levelCategories.xs" :key="'xs-' + c" class="ml-3" :text="c"></colored-tag>
       </div>
       <h3>Categorias S ({{ engine.levelCategories.s.length }})</h3>
       <div>
-        <colored-tag v-for="c in engine.levelCategories.s" :key="c" class="ml-3" :text="c"></colored-tag>
+        <colored-tag v-for="c in engine.levelCategories.s" :key="'s-' + c" class="ml-3" :text="c"></colored-tag>
       </div>
       <h3>Categorias M ({{ engine.levelCategories.m.length }})</h3>
       <div>
-        <colored-tag v-for="c in engine.levelCategories.m" :key="c" class="ml-3" :text="c"></colored-tag>
+        <colored-tag v-for="c in engine.levelCategories.m" :key="'m-' + c" class="ml-3" :text="c"></colored-tag>
       </div>
       <h3>Categorias L ({{ engine.levelCategories.l.length }})</h3>
       <div>
-        <colored-tag v-for="c in engine.levelCategories.l" :key="c" class="ml-3" :text="c"></colored-tag>
+        <colored-tag v-for="c in engine.levelCategories.l" :key="'l-' + c" class="ml-3" :text="c"></colored-tag>
       </div>
       <h3>Categorias XL ({{ engine.levelCategories.xl.length }})</h3>
       <div>
-        <colored-tag v-for="c in engine.levelCategories.xl" :key="c" class="ml-3" :text="c"></colored-tag>
+        <colored-tag v-for="c in engine.levelCategories.xl" :key="'xl-' + c" class="ml-3" :text="c"></colored-tag>
       </div>
 
       <hr />
 
       <h3>Categorias Obtenidas ({{ engine.activeCategories.length }})</h3>
       <b-card-group deck>
-        <categoria-item v-for="c in engine.activeCategories" :key="c.categoria" :categoria="c"></categoria-item>
+        <categoria-item v-for="c in engine.activeCategories" :key="'cat-' + c.categoria" :categoria="c"></categoria-item>
       </b-card-group>
 
       <hr />
@@ -226,27 +268,27 @@
 
       <h3>Chunks <b-badge pill>XS</b-badge></h3>
       <b-card-group deck>
-        <chunk-item v-for="c in engine.chunks.xs" :key="c.categoria" :chunk="c"></chunk-item>
+        <chunk-item v-for="c in engine.chunks.xs" :key="'cxs-' + c.categoria" :chunk="c"></chunk-item>
       </b-card-group>
 
       <h3>Chunks <b-badge pill>S</b-badge></h3>
       <b-card-group deck>
-        <chunk-item v-for="c in engine.chunks.s" :key="c.categoria" :chunk="c"></chunk-item>
+        <chunk-item v-for="c in engine.chunks.s" :key="'cs-' + c.categoria" :chunk="c"></chunk-item>
       </b-card-group>
 
       <h3>Chunks <b-badge pill>M</b-badge></h3>
       <b-card-group deck>
-        <chunk-item v-for="c in engine.chunks.m" :key="c.categoria" :chunk="c"></chunk-item>
+        <chunk-item v-for="c in engine.chunks.m" :key="'cm-' + c.categoria" :chunk="c"></chunk-item>
       </b-card-group>
 
       <h3>Chunks <b-badge pill>L</b-badge></h3>
       <b-card-group deck>
-        <chunk-item v-for="c in engine.chunks.l" :key="c.categoria" :chunk="c"></chunk-item>
+        <chunk-item v-for="c in engine.chunks.l" :key="'cl-' + c.categoria" :chunk="c"></chunk-item>
       </b-card-group>
 
       <h3>Chunks <b-badge pill>XL</b-badge></h3>
       <b-card-group deck>
-        <chunk-item v-for="c in engine.chunks.xl" :key="c.categoria" :chunk="c"></chunk-item>
+        <chunk-item v-for="c in engine.chunks.xl" :key="'cxl-' + c.categoria" :chunk="c"></chunk-item>
       </b-card-group>
     </b-card>
   </main>
@@ -295,10 +337,19 @@ export default {
       opciones: {
         starvation: true
       },
+      textCategories: {
+        separador: ';',
+        xsString: '',
+        sString: '',
+        mString: '',
+        lString: '',
+        xlString: '',
+      },
       combos: {
         starvation: [{ value: true, text:'True'}, { value: false, text:'False'}],
         activeCardIndex: 0,
-        showResult: false
+        showResult: false,
+        showOptions: true
       },
       engine: {
         activeCategories: [],
@@ -377,36 +428,11 @@ export default {
       // Numero de runs
       // const runs = 1 // TODO: Cambiar
 
-      // Crear categorias
-      _.times(this.chunks.categories, () => {
-        let inserted = false
-        while(!inserted) {
-          const word = faker.commerce.productAdjective()
-          if(!this.engine.categories.includes(word)) {
-            this.engine.categories.push(word)
-            inserted = true
-          }
-        }
-      })
-      consola.log('Listado de Categorias generado')
-      consola.log(this.engine.categories)
-      consola.log('--------------------------------------------')
-
-      // Crear listas de chunks
-      for (const key in this.engine.levelCategories) {
-        if (Object.hasOwnProperty.call(this.engine.levelCategories, key)) {
-          const shuffled = _.shuffle(this.engine.categories)
-          const itemsToRemove = this.chunks[key] < 0 ? shuffled.length : shuffled.length - this.chunks[key]
-          _.times(itemsToRemove, () => {
-            shuffled.pop()
-          })
-          this.engine.levelCategories[key] = shuffled
-          consola.log(`Categoria [${key}]`)
-          consola.log(this.engine.levelCategories[key])
-        }
+      if(this.combos.activeCardIndex === 0) {
+        this.crearCategoriasRandom()
+      } else {
+        this.parseCategorias()
       }
-      consola.log('-------------------------------------------')
-      consola.log('--------------------------------------------')
 
       // Iteration xs
       this.iteration('xs')
@@ -466,6 +492,73 @@ export default {
         }
       }
     },
+    crearCategoriasRandom() {
+      // Crear categorias
+      _.times(this.chunks.categories, () => {
+        let inserted = false
+        while(!inserted) {
+          const word = faker.commerce.productAdjective()
+          if(!this.engine.categories.includes(word)) {
+            this.engine.categories.push(word)
+            inserted = true
+          }
+        }
+      })
+      consola.log('Listado de Categorias generado')
+      consola.log(this.engine.categories)
+      consola.log('--------------------------------------------')
+
+      // Crear listas de chunks
+      for (const key in this.engine.levelCategories) {
+        if (Object.hasOwnProperty.call(this.engine.levelCategories, key)) {
+          const shuffled = _.shuffle(this.engine.categories)
+          const itemsToRemove = this.chunks[key] < 0 ? shuffled.length : shuffled.length - this.chunks[key]
+          _.times(itemsToRemove, () => {
+            shuffled.pop()
+          })
+          this.engine.levelCategories[key] = shuffled
+          consola.log(`Categoria [${key}]`)
+          consola.log(this.engine.levelCategories[key])
+        }
+      }
+      consola.log('-------------------------------------------')
+      consola.log('--------------------------------------------')
+    },
+    parseCategorias() {
+      consola.log('Parseando categorias....')
+      const separador = this.textCategories.separador
+
+      const xs = this.textCategories.xsString.split(separador)
+      this.engine.levelCategories.xs = xs
+      consola.log('Categoria XS')
+      consola.log(xs)
+
+      const s = this.textCategories.sString.split(separador)
+      this.engine.levelCategories.s = s
+      consola.log('Categoria S')
+      consola.log(s)
+
+      const m = this.textCategories.mString.split(separador)
+      this.engine.levelCategories.m = m
+      consola.log('Categoria M')
+      consola.log(m)
+
+      const l = this.textCategories.lString.split(separador)
+      this.engine.levelCategories.l = l
+      consola.log('Categoria L')
+      consola.log(l)
+
+      const xl = this.textCategories.xlString.split(separador)
+      this.engine.levelCategories.xl = xl
+      consola.log('Categoria XL')
+      consola.log(xl)
+
+      const categoriesRaw = xs.concat(s).concat(m).concat(l).concat(xl)
+      const categories = [...new Set(categoriesRaw)]
+      this.engine.categories = categories
+      consola.log('Categorias Totales')
+      consola.log(categories)
+    },
     iteration(level) {
       // Cleanup
       consola.log(`Iniciando nivel [${level}]...`)
@@ -483,7 +576,7 @@ export default {
       }
 
       // Obtener categorias de nivel
-      const levelCategories = this.engine.levelCategories[level]
+      const levelCategories = [...this.engine.levelCategories[level]]
 
       // Si la lista esta vacia, se añade aleatoriamente
       if(this.engine.activeCategories.length === 0) {
@@ -668,7 +761,7 @@ export default {
 
       // Si no hay mas en la lista, se añade una
       consola.log('No se han obtenido categorias usables en la lista, obteniendo nueva')
-      const cat = this.getRandomCategoria(categorias.map(x => x.categoria), level)
+      const cat = this.getRandomCategoria(this.engine.activeCategories.map(x => x.categoria), level)
 
       // Se genera la categoria y se añade al listado
       const catObj = this.crearCategoria(cat, id)
